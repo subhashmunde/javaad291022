@@ -1,4 +1,5 @@
 @echo off
+
 REM
 REM  Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
 REM
@@ -16,19 +17,9 @@ REM  SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 REM
 
 
-REM  Always use JDK 1.6 or higher
-REM  Depends on Java from ..\config\asenv.bat
-VERIFY OTHER 2>nul
-setlocal ENABLEEXTENSIONS
-if ERRORLEVEL 0 goto ok
-echo "Unable to enable extensions"
-exit /B 1
-:ok
-call "%~dp0..\config\asenv.bat"
-if "%AS_JAVA%x" == "x" goto UsePath
-set JAVA="%AS_JAVA%\bin\java"
-goto run
-:UsePath
-set JAVA=java
-:run
-%JAVA% -jar "%~dp0..\lib\client\appserver-cli.jar" %*
+setlocal
+
+set AS_INSTALL=%~dp0..
+set AS_INSTALL_LIB=%AS_INSTALL%\modules
+
+java  -Xms24m -Xmx96m  -cp "%AS_INSTALL_LIB%\common-util.jar;%AS_INSTALL_LIB%\cmp-utility.jar;%AS_INSTALL_LIB%\cmp-support-ejb.jar;%AS_INSTALL_LIB%\cmp-ejb-mapping.jar;%AS_INSTALL_LIB%\dbschema-repackaged.jar;%CLASSPATH%" com.sun.jdo.spi.persistence.support.ejb.util.CaptureSchemaWrapper %*

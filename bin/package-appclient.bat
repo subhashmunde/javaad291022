@@ -15,20 +15,17 @@ REM
 REM  SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 REM
 
-
-REM  Always use JDK 1.6 or higher
-REM  Depends on Java from ..\config\asenv.bat
-VERIFY OTHER 2>nul
-setlocal ENABLEEXTENSIONS
-if ERRORLEVEL 0 goto ok
-echo "Unable to enable extensions"
-exit /B 1
-:ok
-call "%~dp0..\config\asenv.bat"
+setlocal
+set _AS_INSTALL=%~dp0..
+call "%_AS_INSTALL%\config\asenv.bat"
+REM
+REM  Run with the user-specified Java, if any.
+REM
 if "%AS_JAVA%x" == "x" goto UsePath
 set JAVA="%AS_JAVA%\bin\java"
 goto run
 :UsePath
 set JAVA=java
 :run
-%JAVA% -jar "%~dp0..\lib\client\appserver-cli.jar" %*
+set _AS_INSTALL_LIB=%_AS_INSTALL%\lib
+%JAVA% -classpath "%_AS_INSTALL_LIB%\gf-client.jar" org.glassfish.appclient.client.packageappclient.PackageAppClient %*
